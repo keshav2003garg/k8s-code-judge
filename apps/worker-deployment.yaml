@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: worker
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: worker
+    template:
+        metadata:
+            labels:
+                app: worker
+        spec:
+            containers:
+                - name: worker
+                  image: judge0/judge0:1.13.1
+                  command: ['./scripts/workers']
+                  volumeMounts:
+                      - name: config-volume
+                        mountPath: /judge0.conf
+                        subPath: judge0.conf
+                  resources:
+                      limits:
+                          cpu: '1'
+                          memory: '1Gi'
+            volumes:
+                - name: config-volume
+                  configMap:
+                      name: judge0-config
